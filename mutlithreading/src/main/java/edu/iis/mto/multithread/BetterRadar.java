@@ -5,34 +5,28 @@ import java.util.concurrent.Executors;
 
 public class BetterRadar {
 
-    private final int rocketCount;
+    private final int rocketsCount;
     private final PatriotBattery battery;
     private final ExecutorService executorService;
 
     public BetterRadar(PatriotBattery battery, int rocketCount) {
         this.battery = battery;
-        this.rocketCount = rocketCount;
+        this.rocketsCount = rocketCount;
         executorService = Executors.newSingleThreadExecutor();
     }
 
-    public BetterRadar(PatriotBattery battery, int rocketCount, ExecutorService executorService) {
+    public BetterRadar(PatriotBattery battery, int rocketsCount, ExecutorService executorService) {
         this.battery = battery;
-        this.rocketCount = rocketCount;
+        this.rocketsCount = rocketsCount;
         this.executorService = executorService;
     }
 
     public void notice(Scud enemyMissle) {
-        launchPatriot(enemyMissle, rocketCount);
-    }
-
-    private void launchPatriot(Scud enemyMissle, int rocketCount) {
-        Runnable launchPatriotTask = () -> {
-            for (int i = 0; i < rocketCount; i++) {
-                battery.launchPatriot(enemyMissle);
+        this.executorService.execute(() -> {
+            for (int i = 0; i < rocketsCount; i++) {
+                this.battery.launchPatriot(enemyMissle);
             }
-        };
-
-        executorService.submit(launchPatriotTask);
+        });
     }
 
 }
